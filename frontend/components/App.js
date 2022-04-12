@@ -25,18 +25,31 @@ export default class App extends React.Component {
 
   addNewTodo = todo => {
     axios.post(URL, {"name": todo})
+    .then(res => {
+      this.fetchTodos()
+    })
+    .catch(err => console.log(err))
   }
-  
+
   toggleCompleted = id => {
     axios.patch(`${URL}/${id}`)
+    .then(res => {
+      this.fetchTodos()
+    })
+    .catch(err => console.log(err))
+  }
+
+  clearCompleted = () => {
+    this.setState({todos: this.state.todos.filter(todo => {
+      return !todo.completed
+    })})
   }
   render() {
-    console.log(this.state.todos)
     return (
       <div>
         <TodoList toggleCompleted={this.toggleCompleted} todos={this.state.todos}/>
-        <Form/>
-        <button>Clear Completed</button>
+        <Form addNewTodo={this.addNewTodo}/>
+        <button onClick={this.clearCompleted}>Clear Completed</button>
       </div>
     )
   }
